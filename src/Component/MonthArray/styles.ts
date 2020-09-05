@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     paddingLeft: 20,
     marginBottom: 10,
-    alignItems: 'center',
+    // alignItems: 'center',
   },
 
   monthNameContainer: {

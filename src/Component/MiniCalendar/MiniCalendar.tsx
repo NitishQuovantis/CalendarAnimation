@@ -199,6 +199,8 @@ export default class MiniCalendar extends React.Component<Props, State> {
   };
 
   startMonthNameAnimation = (toValue: number) => {
+    console.log('month name animatino is', toValue);
+
     const {monthAnimation} = this.state;
     Animated.timing(monthAnimation, {
       toValue,
