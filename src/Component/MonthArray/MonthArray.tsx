@@ -1,6 +1,7 @@
 import React from 'react';
-import {View, Text, Animated, ViewStyle} from 'react-native';
+import {View, Text, Animated, ViewStyle, Image} from 'react-native';
 import Styles from './styles';
+import * as Images from '../../Utils/Images';
 
 export interface Props {
   animation: Animated.Value;
@@ -31,6 +32,14 @@ const MonthArray: React.FC<Props> = (props: Props) => {
           return <MonthItem key={item} name={item} />;
         })}
       </Animated.View>
+
+      <View style={[Styles.imageContainerStyle]}>
+        <Image
+          source={Images.CalendarIcon}
+          style={{width: 20, height: 20}}
+          resizeMode="contain"
+        />
+      </View>
     </View>
   );
 };
