@@ -1,6 +1,6 @@
 import React from 'react';
 import {View} from 'react-native';
-import {Moment} from 'moment';
+import moment, {Moment} from 'moment';
 
 import Styles from './styles';
 import {MiniCalendar} from '../../Component';
@@ -9,6 +9,7 @@ import * as DateUtils from '../../Utils/DateUtils';
 export interface Props {}
 export interface State {
   weeksArray: Array<Array<Moment>>;
+  monthArray: Array<string>;
 }
 
 export default class Home extends React.Component<Props, State> {
@@ -19,14 +20,33 @@ export default class Home extends React.Component<Props, State> {
     super(props);
 
     const weeksArray = DateUtils.GetWeekArray(10, 10);
+    const monthNameArray = this.getMonthFromWeekArray(weeksArray);
 
     this.state = {
       weeksArray,
+      monthArray: monthNameArray,
     };
   }
 
+  getMonthFromWeekArray = (weeksArray: Array<Array<Moment>>): Array<string> => {
+    const firstDate = weeksArray[0][0];
+    const lastDate = weeksArray[weeksArray.length - 1][6];
+
+    let monthNameArray: Array<string> = [];
+
+    let now = moment(firstDate);
+
+    while (lastDate.isSameOrAfter(now)) {
+      const monthName = now.format('MMMM');
+      now = now.add(1, 'month');
+      monthNameArray.push(monthName);
+    }
+
+    return monthNameArray;
+  };
+
   render() {
-    const {weeksArray} = this.state;
+    const {weeksArray, monthArray} = this.state;
 
     return (
       <View style={Styles.containerStyle}>
@@ -34,6 +54,7 @@ export default class Home extends React.Component<Props, State> {
           weeksArray={weeksArray}
           previousWeeks={this.previousWeeks}
           forwardWeeks={this.forwardWeeks}
+          monthArray={monthArray}
         />
       </View>
     );

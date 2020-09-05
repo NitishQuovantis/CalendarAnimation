@@ -13,6 +13,7 @@ import {Moment} from 'moment';
 import MaskedView from '@react-native-community/masked-view';
 import SingleDayItem from '../SingleDayItem/SingleDayItem';
 import WeekComponent from '../WeekComponent/WeekComponent';
+import MonthArray from '../MonthArray/MonthArray';
 import {Width as ItemWidth} from '../SingleDayItem/styles';
 import * as DateUtils from '../../Utils/DateUtils';
 
@@ -69,11 +70,13 @@ export interface Props {
   weeksArray: Array<Array<Moment>>;
   previousWeeks: number;
   forwardWeeks: number;
+  monthArray: Array<string>;
 }
 export interface State {
   circularHightlightAnimated: Animated.Value;
   currentlySelectedDate: Moment;
   selectedDay: number;
+  monthAnimation: Animated.Value;
 }
 
 const Days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
@@ -92,6 +95,7 @@ export default class MiniCalendar extends React.Component<Props, State> {
       currentlySelectedDate: currentDate,
       selectedDay: currentWeekDay,
       circularHightlightAnimated: new Animated.Value(currentWeekDay - 1),
+      monthAnimation: new Animated.Value(0),
     };
   }
 
@@ -120,8 +124,6 @@ export default class MiniCalendar extends React.Component<Props, State> {
     const selectedDate = currentWeek[selectedDay];
 
     this.setState({currentlySelectedDate: selectedDate});
-
-    console.log('selected date is', selectedDate.format('YYYY-MM-DD'));
   };
 
   getCircularHighlightStyle = () => {
@@ -191,10 +193,13 @@ export default class MiniCalendar extends React.Component<Props, State> {
     const circularHightlightAnimatedStyle = this.getCircularHighlightStyle();
     const morphingViewAnimatedStyle = this.getMorphingListviewStyle();
 
-    const {weeksArray} = this.props;
+    const {weeksArray, monthArray} = this.props;
+    const {monthAnimation} = this.state;
 
     return (
       <View style={Styles.containerStyle}>
+        <MonthArray animation={monthAnimation} monthArray={monthArray} />
+
         <View>
           <FlatList
             bounces={false}
