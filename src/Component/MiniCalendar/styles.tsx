@@ -1,6 +1,5 @@
 import {StyleSheet} from 'react-native';
 import {Width} from '../SingleDayItem/styles';
-
 export const CircularHightlightSize = 50;
 
 const styles = StyleSheet.create({
@@ -12,7 +11,7 @@ const styles = StyleSheet.create({
   },
 
   dummyList: {
-    width: Width,
+    // width: Width,
     height: 50,
     position: 'absolute',
     left: 0,
@@ -21,12 +20,30 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
 
-  circleHighlight: {
-    width: CircularHightlightSize,
+  circleHighlightContainer: {
+    width: Width,
     height: CircularHightlightSize,
     position: 'absolute',
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center',
+  },
+
+  circularHighlight: {
+    width: CircularHightlightSize,
+    height: CircularHightlightSize,
     borderRadius: CircularHightlightSize / 2,
-    backgroundColor: 'gray',
+    backgroundColor: 'red',
+  },
+
+  maskedViewStyle: {
+    flex: 1,
+  },
+
+  maskedElementStyle: {
+    backgroundColor: 'transparent',
+    width: '100%',
+    height: '100%',
   },
 });
 

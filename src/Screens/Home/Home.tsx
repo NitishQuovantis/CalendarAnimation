@@ -12,6 +12,9 @@ export interface State {
 }
 
 export default class Home extends React.Component<Props, State> {
+  previousWeeks: number = 10;
+  forwardWeeks: number = 10;
+
   constructor(props: Props) {
     super(props);
 
@@ -27,7 +30,11 @@ export default class Home extends React.Component<Props, State> {
 
     return (
       <View style={Styles.containerStyle}>
-        <MiniCalendar weeksArray={weeksArray} />
+        <MiniCalendar
+          weeksArray={weeksArray}
+          previousWeeks={this.previousWeeks}
+          forwardWeeks={this.forwardWeeks}
+        />
       </View>
     );
   }

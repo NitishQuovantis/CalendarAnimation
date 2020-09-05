@@ -1,5 +1,9 @@
 import moment, {Moment} from 'moment';
 
+export function getCurrentDate(): Moment {
+  return moment();
+}
+
 export function GetWeekArray(
   forwardWeek: number,
   backwardWeek: number,
@@ -66,8 +70,25 @@ export function getBackwardWeekArray(currentDate: Moment, noOfWeeks: number) {
     currentWeekDay.subtract(1, 'week');
     const array = getDayArrayForDays(currentWeekDay, 7);
 
-    daysArray.push(array);
+    daysArray.unshift(array);
   }
 
   return daysArray;
+}
+
+export function getCurrentDayInWeek(): number {
+  const now = moment();
+  return now.get('day');
+}
+
+export function getWeekDayOn(data: Moment | string): number {
+  const date = moment(data);
+  const day = date.get('day');
+
+  if (day === 0) {
+    // for sunday, return 6, as 6 is last day of week
+    return 7;
+  }
+
+  return day;
 }
