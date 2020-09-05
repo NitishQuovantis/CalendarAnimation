@@ -93,8 +93,11 @@ export function getWeekDayOn(data: Moment | string): number {
   return day;
 }
 
-export function getCurrentMonthIndexIn(monthArray: Array<string>): number {
-  const now = moment();
+export function getMonthIndex(
+  monthArray: Array<string>,
+  date: Moment | number,
+): number {
+  const now = moment(date);
   const currentMonth = now.format('MMMM');
 
   return monthArray.indexOf(currentMonth);

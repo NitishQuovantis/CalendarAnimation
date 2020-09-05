@@ -9,7 +9,7 @@ import {
   Dimensions,
   ViewStyle,
 } from 'react-native';
-import {Moment} from 'moment';
+import moment, {Moment} from 'moment';
 import MaskedView from '@react-native-community/masked-view';
 import SingleDayItem from '../SingleDayItem/SingleDayItem';
 import WeekComponent from '../WeekComponent/WeekComponent';
@@ -47,7 +47,7 @@ const List = React.forwardRef<
       onScroll={onScroll}
       horizontal
       scrollEventThrottle={16}
-      decelerationRate="fast"
+      //   decelerationRate="fast"
       onMomentumScrollEnd={onScrollStop}
       data={weeksArray}
       keyExtractor={(item, index) => {
@@ -90,12 +90,16 @@ export default class MiniCalendar extends React.Component<Props, State> {
 
     const currentDate = DateUtils.getCurrentDate();
     const currentWeekDay = DateUtils.getWeekDayOn(currentDate);
+    const currentMonthIndex = DateUtils.getMonthIndex(
+      props.monthArray,
+      moment(),
+    );
 
     this.state = {
       currentlySelectedDate: currentDate,
       selectedDay: currentWeekDay,
       circularHightlightAnimated: new Animated.Value(currentWeekDay - 1),
-      monthAnimation: new Animated.Value(0),
+      monthAnimation: new Animated.Value(currentMonthIndex),
     };
   }
 
@@ -122,8 +126,13 @@ export default class MiniCalendar extends React.Component<Props, State> {
     const currentWeek = weeksArray[currentWeekItemIndex];
 
     const selectedDate = currentWeek[selectedDay];
+    const selectedMonthIndex = DateUtils.getMonthIndex(
+      this.props.monthArray,
+      selectedDate,
+    );
 
     this.setState({currentlySelectedDate: selectedDate});
+    this.startMonthNameAnimation(selectedMonthIndex);
   };
 
   getCircularHighlightStyle = () => {
@@ -166,14 +175,17 @@ export default class MiniCalendar extends React.Component<Props, State> {
 
   onDateClick = (date: Moment) => {
     const currentDateInWeek = DateUtils.getWeekDayOn(date) - 1;
-
-    console.log('current date is', currentDateInWeek);
+    const currentMonthIndex = DateUtils.getMonthIndex(
+      this.props.monthArray,
+      date,
+    );
 
     this.setState({
       currentlySelectedDate: date,
       selectedDay: currentDateInWeek,
     });
     this.startDateAnimation(currentDateInWeek);
+    this.startMonthNameAnimation(currentMonthIndex);
   };
 
   startDateAnimation = (toValue: number) => {
@@ -181,7 +193,16 @@ export default class MiniCalendar extends React.Component<Props, State> {
 
     Animated.timing(circularHightlightAnimated, {
       toValue,
-      duration: 2000,
+      duration: 400,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  startMonthNameAnimation = (toValue: number) => {
+    const {monthAnimation} = this.state;
+    Animated.timing(monthAnimation, {
+      toValue,
+      duration: 400,
       useNativeDriver: true,
     }).start();
   };
