@@ -19,7 +19,10 @@ export default class Home extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    const weeksArray = DateUtils.GetWeekArray(10, 10);
+    const weeksArray = DateUtils.GetWeekArray(
+      this.forwardWeeks,
+      this.previousWeeks,
+    );
     const monthNameArray = this.getMonthFromWeekArray(weeksArray);
 
     this.state = {

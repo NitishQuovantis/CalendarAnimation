@@ -25,6 +25,8 @@ const MonthArray: React.FC<Props> = (props: Props) => {
   const {animation, monthArray} = props;
   const animatedStyle = getAnimatedStyle(animation);
 
+  console.log('month array is', monthArray);
+
   return (
     <View style={Styles.containerStyle}>
       <Animated.View style={animatedStyle}>

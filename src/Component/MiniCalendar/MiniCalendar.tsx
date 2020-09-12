@@ -18,6 +18,7 @@ import {Width as ItemWidth} from '../SingleDayItem/styles';
 import * as DateUtils from '../../Utils/DateUtils';
 
 import Styles, {CircularHightlightSize} from './styles';
+import {CalendarPadding} from '../../Screens/Home/styles';
 
 const {width: ScreenWidth} = Dimensions.get('screen');
 
@@ -30,41 +31,47 @@ const List = React.forwardRef<
     onScrollStop?: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
     isMorphed: boolean;
     onDateClick: ((date: Moment) => void) | null;
+    backwardWeeks: number;
   }
->(({weeksArray, onScroll, isMorphed, onDateClick, onScrollStop}, ref: any) => {
-  return (
-    <FlatList
-      initialScrollIndex={10}
-      ref={ref}
-      showsHorizontalScrollIndicator={false}
-      getItemLayout={(data, index) => ({
-        length: ScreenWidth,
-        offset: ScreenWidth * index,
-        index,
-      })}
-      pagingEnabled
-      bounces={false}
-      onScroll={onScroll}
-      horizontal
-      scrollEventThrottle={16}
-      //   decelerationRate="fast"
-      onMomentumScrollEnd={onScrollStop}
-      data={weeksArray}
-      keyExtractor={(item, index) => {
-        return index.toString();
-      }}
-      renderItem={({item}) => {
-        return (
-          <WeekComponent
-            weekDays={item}
-            isMorphed={isMorphed}
-            onDateClick={onDateClick}
-          />
-        );
-      }}
-    />
-  );
-});
+>(
+  (
+    {weeksArray, onScroll, isMorphed, onDateClick, onScrollStop, backwardWeeks},
+    ref: any,
+  ) => {
+    return (
+      <FlatList
+        initialScrollIndex={backwardWeeks - 1}
+        ref={ref}
+        showsHorizontalScrollIndicator={false}
+        getItemLayout={(data, index) => ({
+          length: ScreenWidth - 2 * CalendarPadding,
+          offset: (ScreenWidth - 2 * CalendarPadding) * index,
+          index,
+        })}
+        pagingEnabled
+        bounces={false}
+        onScroll={onScroll}
+        horizontal
+        scrollEventThrottle={16}
+        //   decelerationRate="fast"
+        onMomentumScrollEnd={onScrollStop}
+        data={weeksArray}
+        keyExtractor={(item, index) => {
+          return index.toString();
+        }}
+        renderItem={({item}) => {
+          return (
+            <WeekComponent
+              weekDays={item}
+              isMorphed={isMorphed}
+              onDateClick={onDateClick}
+            />
+          );
+        }}
+      />
+    );
+  },
+);
 
 export interface Props {
   weeksArray: Array<Array<Moment>>;
@@ -139,7 +146,7 @@ export default class MiniCalendar extends React.Component<Props, State> {
     const {circularHightlightAnimated} = this.state;
 
     const leftPosition = 0;
-    const finalPosition = ScreenWidth - ItemWidth;
+    const finalPosition = ScreenWidth - ItemWidth - 2 * CalendarPadding;
 
     const translationInterpolation = circularHightlightAnimated.interpolate({
       inputRange: [0, 6],
@@ -155,7 +162,7 @@ export default class MiniCalendar extends React.Component<Props, State> {
     const {circularHightlightAnimated} = this.state;
 
     const leftPosition = 4;
-    const finalPosition = ScreenWidth - ItemWidth + 4;
+    const finalPosition = ScreenWidth - ItemWidth + 4 - 2 * CalendarPadding;
 
     const translationInterpolation = circularHightlightAnimated.interpolate({
       inputRange: [0, 6],
@@ -216,7 +223,7 @@ export default class MiniCalendar extends React.Component<Props, State> {
     const circularHightlightAnimatedStyle = this.getCircularHighlightStyle();
     const morphingViewAnimatedStyle = this.getMorphingListviewStyle();
 
-    const {weeksArray, monthArray} = this.props;
+    const {weeksArray, monthArray, previousWeeks} = this.props;
     const {monthAnimation} = this.state;
 
     return (
@@ -237,9 +244,11 @@ export default class MiniCalendar extends React.Component<Props, State> {
 
         <View>
           <List
+            key="Actual list"
             ref={this.realFlatListRef}
             weeksArray={weeksArray}
             onScroll={this.onScroll}
+            backwardWeeks={previousWeeks}
             isMorphed={false}
             onDateClick={this.onDateClick}
             onScrollStop={this.onScrollStop}
@@ -267,6 +276,7 @@ export default class MiniCalendar extends React.Component<Props, State> {
                 weeksArray={weeksArray}
                 ref={this.dummaryFlatListRef}
                 isMorphed={true}
+                backwardWeeks={previousWeeks}
                 onDateClick={null}
               />
             </MaskedView>
